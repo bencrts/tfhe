@@ -122,35 +122,23 @@ alpha = sqrt(2*pi)*sd    # estimator defines noise rate = sqrt(2pi).stdev
 q = 2**32                # for compatibility only
 m = oo                   # the attacker can use as many samples he wishes 
 secret_distribution = (0,1)
-success_probability = 0.99
-
 
 # Chosen cost model 
-# BKZ cost models: CLASSICAL - 0.292*beta + 16.4 + log(8*d,2) - primal
+# BKZ cost model: CLASSICAL - 0.292*beta + 16.4 + log(8*d,2) 
 # i.e. BKZ.sieve =  lambda beta, d, B: ZZ(2)**RR(0.292*beta + 16.4 + log(8*d,2))
-print("CLASSICAL PRIMAL")
-print(primal_usvp(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=BKZ.sieve))
-# BKZ cost models: CLASSICAL - 0.292*beta + 16.4 + log(8*d,2) - dual
-# i.e. BKZ.sieve =  lambda beta, d, B: ZZ(2)**RR(0.292*beta + 16.4 + log(8*d,2))
-print("CLASSICAL DUAL")
-print(dual_scale(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=BKZ.sieve))
-
+print("CLASSICAL PRIMAL AND DUAL")
+est_classic = estimate_lwe(n, alpha, q, secret_distribution=secret_distribution, m=m, reduction_cost_model=BKZ.sieve, skip = ("arora-gb", "bkw", "dec", "mitm"))
 
 # For more conservative parameters, both classical and quantum  
-# BKZ cost models: CLASSICAL - 0.292 beta - primal
+# BKZ cost model: CLASSICAL - 0.292*beta 
 reduction_cost_model =  lambda beta, d, B: ZZ(2)**RR(0.292*beta)
-print("CLASSICAL PRIMAL (conservative)")
-print(primal_usvp(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=reduction_cost_model))
-# BKZ cost models: CLASSICAL - 0.292 beta - dual
-print("CLASSICAL DUAL (conservative)")
-print(dual_scale(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=reduction_cost_model))
-# BKZ cost models: QUANTUM - 0.265 beta - primal
+print("CLASSICAL PRIMAL AND DUAL (conservative)")
+est_classic_conservative = estimate_lwe(n, alpha, q, secret_distribution=secret_distribution, m=m, reduction_cost_model=reduction_cost_model, skip = ("arora-gb", "bkw", "dec", "mitm"))
+
+# BKZ cost model: QUANTUM - 0.265*beta
 reduction_cost_model =  lambda beta, d, B: ZZ(2)**RR(0.265*beta)
-print("QUANTUM PRIMAL (conservative)")
-print(primal_usvp(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=reduction_cost_model))
-# BKZ cost models: QUANTUM - 0.265 beta - dual
-print("QUANTUM DUAL (conservative)")
-print(dual_scale(n, alpha, q, secret_distribution=secret_distribution, m=m, success_probability=success_probability, reduction_cost_model=reduction_cost_model))
+print("QUANTUM PRIMAL AND DUAL (conservative)")
+est_quantum = estimate_lwe(n, alpha, q, secret_distribution=secret_distribution, m=m, reduction_cost_model=reduction_cost_model, skip = ("arora-gb", "bkw", "dec", "mitm"))
 ```
 
 _We would like to thank [<span>Fernando Virdia</span>](https://fundamental.domains/){:target="_blank"} for the help in the estimation of the security parameters._
